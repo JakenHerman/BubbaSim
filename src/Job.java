@@ -1,3 +1,11 @@
+/*
+ * Written By: Jaken Herman
+ * Date : March 29, 2017
+ * File : SimulationThread.java
+ * Contact: JakenHerman7@Gmail.com
+ * 
+ */
+
 public class Job {
 
     private int arrival;

@@ -1,3 +1,11 @@
+/*
+ * Written By: Jaken Herman
+ * Date : March 29, 2017
+ * File : SimulationThread.java
+ * Contact: JakenHerman7@Gmail.com
+ * 
+ */
+
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,10 +18,10 @@ import java.util.PriorityQueue;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
 import java.awt.BorderLayout;
 import javax.swing.JButton;
 import java.awt.TextArea;
+import java.awt.Choice;
 
 public class BubbaSimGUI implements ActionListener{
 
@@ -82,6 +90,13 @@ public class BubbaSimGUI implements ActionListener{
 		//file and begin processing the data.
 		JButton btnRunSimulation = new JButton("Run Simulation");
 		frame.getContentPane().add(btnRunSimulation, BorderLayout.NORTH);
+		
+		//Allow the user to select how fast the simulation will run.
+		Choice choice = new Choice();
+		frame.getContentPane().add(choice, BorderLayout.EAST);
+		choice.addItem("Slow");
+		choice.addItem("Medium");
+		choice.addItem("Fast");
 
 		
 		//Create a file chooser
@@ -210,11 +225,8 @@ public class BubbaSimGUI implements ActionListener{
 		            	    }
 		            	    
 		            	    //Begin to run simulation
-		            	    try {
-								runSimulation(jl, log);
-							} catch (InterruptedException e1) {
-								e1.printStackTrace();
-							}
+							runSimulation(jl, log, choice);
+
 		            	    
 		            	} catch (IOException e1) {
 							// Print any exceptions
@@ -231,17 +243,11 @@ public class BubbaSimGUI implements ActionListener{
 	 * jobs. runSimulation() actually processes the information the jobs
 	 * hold.
 	 */
-	public void runSimulation(JobList jl, TextArea log) throws InterruptedException {
-		
-		//Instantiate a comparator for priority comparison
-		//among received Jobs to process.
-        Comparator<Job> comparator = new PriorityComparator();
-        
-        //Initialize a Priority Queue that the jobs will be added 
-        //to, so we ensure that top-priority jobs run first.
-		PriorityQueue<Job> jobQueue = 
-	            new PriorityQueue<Job>(jl.getJobCount(), comparator);
-		
+	public void runSimulation(JobList jl, TextArea log, Choice choice){
+
+		//Create a thread that will run our simulation
+		SimulationThread newSimulation = new SimulationThread();
+
 		//Calculate total burst time among all jobs so we know how long
 		//to run the simulation.
 		int totalBurstTime = 0;
@@ -249,52 +255,47 @@ public class BubbaSimGUI implements ActionListener{
 			totalBurstTime += jl.getJobAtIndex(i).getBurst();
 		}
 		
+		//Tell our thread the total burst time.
+		newSimulation.setTotalBurstTime(totalBurstTime);
+		
 		//Create Gannt Chart Data Structure in order to generate
 		//full chart after processing all jobs.
 		String[] chart = new String[totalBurstTime];
 		
-		//Run the simulation from 0 to the end of all job CPU bursts.
-		for(int i = 0; i < totalBurstTime; i++){
-			log.append("CPU Timestap: " + Integer.toString(i) + "\n");
-			
-			//For every job in the JobList jl, check to see if any Jobs
-			//are arriving at the current CPU timestamp
-			for(int k = 0; k < jl.getJobCount(); k++){
-				Job currentJob = jl.getJobAtIndex(k);
-				if(currentJob.getArrival() == i){
-					//If Job arrives at timestamp i, append it's name to the log.
-					log.append("Job " + currentJob.getName() + " arrived. \n");
-					//Add the Job to the PriorityQueue.
-					jobQueue.add(currentJob);
-				}
-			}
-			
-			//If there is nothing in the job Queue, there is nothing
-			//to display on the Gannt Chart, hence '#' is entered.
-			if(jobQueue.isEmpty()){
-				ganntChartGenerator(chart, "|#", i);
-			}
-			//If the Job Queue does have jobs available, peek the 
-			//outgoing job into the Gannt Chart, then remove the 
-			//Job from the job Queue.
-			else {
-				log.append("Running Process " + jobQueue.peek().getName() + "\n");
-				ganntChartGenerator(chart, "|"+jobQueue.peek().getName(), i);
-				//Decrement the amount of remaining burst time the Job should
-				//have.
-				jobQueue.peek().setBurst(jobQueue.peek().getBurst()-1);
-				
-				//If the peeking Job has no more CPU Burst remaining, we remove
-				//the Job from the Job Queue.
-				if (jobQueue.peek().getBurst() == 0){
-					jobQueue.remove();
-				}
-			}
+		//Send our newly created Gannt Chart to our thread.
+		newSimulation.setChart(chart);
+		
+		//Create a comparator for our PriorityQueue.
+		Comparator<Job> comparator = new PriorityComparator();
+		
+		//Create a Priority Queue for our simulator.
+		PriorityQueue<Job> jobQueue = new PriorityQueue<Job>(totalBurstTime, comparator);
+		
+		//Send any other pertinent information to our thread.
+		newSimulation.setTextArea(log);
+		newSimulation.setJobList(jl);
+		newSimulation.setJobQueue(jobQueue);
+		newSimulation.setComparator(comparator);
+		
+		//Set the speed last, depending on user's selection of 'choice'
+		if(choice.getSelectedItem().equals("Slow")){
+			newSimulation.setSpeed(1000);
 		}
-		//Display the Gannt Chart of the Simulation
-		displayGanntChart(chart, log);
+		else if(choice.getSelectedItem().equals("Medium")){
+			newSimulation.setSpeed(100);
+		}
+		else {
+			newSimulation.setSpeed(1);
+		}
+		
+		//Begin the thread
+		newSimulation.start();
+		
+		//When the thread is complete, print the Gannt Chart by
+		//Obtaining the chart information from the Thread.
+		newSimulation.getChart();
 	}
-	
+
 	//Allow the user to display the Gannt chart created by running the 
 	//simulation.
 	public void displayGanntChart(String[] chart, TextArea log){
@@ -303,15 +304,8 @@ public class BubbaSimGUI implements ActionListener{
 		}
 	}
 	
-	public void ganntChartGenerator(String[] chart, 
-									String processName, int index){
-		chart[index] = processName;
-		
-	}
-	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		//necessary for ActionListener, not used.
+		// unused actionPerformed.
 	}
-
 }

@@ -1,3 +1,10 @@
+/*
+ * Written By: Jaken Herman
+ * Date : March 29, 2017
+ * File : SimulationThread.java
+ * Contact: JakenHerman7@Gmail.com
+ * 
+ */
 
 public class JobList {
 	private int jobCount;
@@ -20,7 +27,7 @@ public class JobList {
 	//Allows us to add jobs to the JobList.
 	public void addJob(Job newJob){
 		jobs[jobIndex] = newJob;
-		jobIndex++;
+		jobIndex += 1;
 	}
 	
 	//Allow user to check the amount of Jobs
