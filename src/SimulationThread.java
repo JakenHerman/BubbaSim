@@ -39,7 +39,7 @@ public class SimulationThread extends Thread {
 	//among received Jobs to process.
 	Comparator<Job> comparator;
 	
-	//Allows the user to speficy how fast they want the
+	//Allows the user to specify how fast they want the
 	//simulation to run.
 	public void setSpeed(int speed){
 		this.speed = speed;
@@ -94,9 +94,11 @@ public class SimulationThread extends Thread {
 			//are arriving at the current CPU timestamp
 			for(int k = 0; k < jl.getJobCount(); k++){
 				Job currentJob = jl.getJobAtIndex(k);
+
 				if(currentJob.getArrival() == i){
 					//If Job arrives at timestamp i, append it's name to the log.
 					log.append("Job " + currentJob.getName() + " arrived. \n");
+					
 					//Add the Job to the PriorityQueue.
 					jobQueue.add(currentJob);
 				}
@@ -110,9 +112,9 @@ public class SimulationThread extends Thread {
 			//If the Job Queue does have jobs available, peek the 
 			//outgoing job into the Gannt Chart, then remove the 
 			//Job from the job Queue.
-			else {
+			else { 
 				log.append("Running Process " + jobQueue.peek().getName() + "\n");
-				ganntChartGenerator(chart, "|"+jobQueue.peek().getName(), i);
+				ganntChartGenerator(chart, "|" + jobQueue.peek().getName(), i);
 				//Decrement the amount of remaining burst time the Job should
 				//have.
 				jobQueue.peek().setBurst(jobQueue.peek().getBurst()-1);
@@ -147,7 +149,7 @@ public class SimulationThread extends Thread {
 									String processName, int index){
 		chart[index] = processName;			
 	}
-		
+	
     public static void main(String args[]) {
         (new SimulationThread()).start();
     }
