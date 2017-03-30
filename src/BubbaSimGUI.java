@@ -61,9 +61,6 @@ public class BubbaSimGUI implements ActionListener{
 		//as they come in to be processed.
 		String[] jobNames = new String[26];
 		
-		//Create the JobList that will be processed.
-		JobList jl = new JobList();
-		
 		//Fill jobNames array with the alphabet
 		for(int i=65;i<=90;i++) {
 			jobNames[i-65]= Character.toString((char)i);
@@ -136,6 +133,9 @@ public class BubbaSimGUI implements ActionListener{
 				int jobCountFlag = 0;
 				int errorFlag = 0;
 				
+				//Clear JobList Completely in case user wants to run another
+				//input file.
+				
 				/*
 				 * In the event of two Jobs having the same priority, we
 				 * will need to allow the user to select a quantum for the
@@ -168,6 +168,10 @@ public class BubbaSimGUI implements ActionListener{
 		             //Read the File line by line
 		             try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 		            	    String line; // where we will store each line from input file.
+		            	    
+        	    			//Create the JobList that will be processed.
+        	    			JobList jl = new JobList();    
+		            	    
 		            	    //While there are more lines in the file, process them
 		            	    while ((line = br.readLine()) != null) {
 		            	       // Check if first line has been processed
@@ -177,8 +181,8 @@ public class BubbaSimGUI implements ActionListener{
 		            	    		try {
 		            	    			//If the first line is has integer value, go ahead
 		            	    			//and parse to an integer.
-		            	    			jobCount = Integer.parseInt(line);
-			            	    		
+		            	    			jobCount = Integer.parseInt(line);  
+		            	    			
 			            	    		//Set the jobCount variable in our 
 			            	    		//JobList to be the value in the first line of our
 			            	    		//input file.
@@ -291,17 +295,6 @@ public class BubbaSimGUI implements ActionListener{
 		//Begin the thread
 		newSimulation.start();
 		
-		//When the thread is complete, print the Gannt Chart by
-		//Obtaining the chart information from the Thread.
-		newSimulation.getChart();
-	}
-
-	//Allow the user to display the Gannt chart created by running the 
-	//simulation.
-	public void displayGanntChart(String[] chart, TextArea log){
-		for(int i = 0; i < chart.length; i++){
-			log.append(chart[i]);
-		}
 	}
 	
 	@Override

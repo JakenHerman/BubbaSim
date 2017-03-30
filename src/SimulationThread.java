@@ -124,12 +124,22 @@ public class SimulationThread extends Thread {
 				}
 			}
 		}
+		
+		//Interrupt the thread and return to the GUI after simulation
+		//is completed.
+		Thread.currentThread().interrupt();
+		
+		//Display the final Gannt Chart.
+		displayGanntChart(chart, log);
     }
     
-    //Allows the user to obtain the final Gannt Chart created by our simulator.
-    public String[] getChart(){
-    	return this.chart;
-    }
+	//Allow the user to display the Gannt chart created by running the 
+	//simulation.
+	public void displayGanntChart(String[] chart, TextArea log){
+		for(int i = 0; i < chart.length; i++){
+			log.append(chart[i]);
+		}
+	}
 	
     //Creates a Gannt Chart of the current simulation to be printed at the
     //end of processing all Jobs.
