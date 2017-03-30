@@ -36,4 +36,10 @@ public class JobList {
 	public int getSizeOfJobList(){
 		return jobs.length;
 	}
+	
+	//Allow user to peek at a specific job in
+	//the JobList.
+	public Job getJobAtIndex(int index){
+		return jobs[index];
+	}
 }
