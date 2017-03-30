@@ -1,7 +1,7 @@
 /*
  * Written By: Jaken Herman
  * Date : March 29, 2017
- * File : SimulationThread.java
+ * File : PriorityCompare.java
  * Contact: JakenHerman7@Gmail.com
  * 
  */
