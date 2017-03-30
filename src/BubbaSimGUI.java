@@ -7,22 +7,18 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.PriorityQueue;
-import java.util.Timer;
-import java.util.concurrent.TimeUnit;
-
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.BorderLayout;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
 import javax.swing.JButton;
-import javax.swing.JTextPane;
 import java.awt.TextArea;
 
 public class BubbaSimGUI implements ActionListener{
 
 	private JFrame frame;
+	private int Quantum;
 	
 	/**
 	 * Launch the application.
@@ -124,6 +120,18 @@ public class BubbaSimGUI implements ActionListener{
 		    {
 				int jobCountFlag = 0;
 				int errorFlag = 0;
+				
+				/*
+				 * In the event of two Jobs having the same priority, we
+				 * will need to allow the user to select a quantum for the
+				 * Round Robin algorithm. This JOptionPane does that.
+				 * 
+				 */
+				 Quantum = Integer.parseInt(JOptionPane.showInputDialog("In the event of two " +
+						 		"jobs having the same priority, please enter " +
+						        "the quantum you'd like to use for the Round " +
+						 		"Robin algorithm"));
+				 log.append("Quantum set to " + Quantum + "\n");
 				
 				//jobs_counted is a way to keep track of how many 
 				//jobs have already been read so we can assign job
