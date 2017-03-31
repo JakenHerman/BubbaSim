@@ -66,7 +66,7 @@ public class BubbaSimGUI implements ActionListener{
 		
 		//initialize JFrame
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
+		frame.setBounds(100, 100, 1000, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		//Create the button that will allow the user to select a
@@ -247,7 +247,9 @@ public class BubbaSimGUI implements ActionListener{
 		
 		//Create Gannt Chart Data Structure in order to generate
 		//full chart after processing all jobs.
-		String[] chart = new String[totalBurstTime];
+		jl.setEarliestArrival();
+		int CPUBurstTime = totalBurstTime + jl.getEarliestArrival();
+		String[] chart = new String[CPUBurstTime];
 		
 		//Send our newly created Gannt Chart to our thread.
 		newSimulation.setChart(chart);

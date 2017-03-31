@@ -17,6 +17,10 @@ public class SimulationThread extends Thread {
 	//can display the output to the user
 	TextArea log;
 	
+	//Create a Turnaround instance in order to calculate and log
+	//turnarounds of all jobs processed.
+	Turnaround turnarounds = new Turnaround();
+	
 	//The totalBurstTime so we know how many times we need to process
 	//jobs in our JobList.
 	int totalBurstTime;
@@ -79,8 +83,21 @@ public class SimulationThread extends Thread {
 	}
 	
     public void run() {
+    	
+    	
+    	//Tell our turnaround log how many jobs it will need to log.
+    	int total_jobs = jl.getJobCount();
+    	turnarounds.setTotalJobs(total_jobs);
+    	
+    	//Set the earliest arrival so we know how long to burst.
+    	jl.setEarliestArrival();
+    	
+    	//Set new burst time according to totalBurstTime + earliest arrival
+    	//to ensure that ghost bursts don't prematurely end program.
+    	int CPUBurstTime = totalBurstTime + jl.getEarliestArrival();
+    	
 		//Run the simulation from 0 to the end of all job CPU bursts.
-		for(int i = 0; i < totalBurstTime; i++){
+		for(int i = 0; i < CPUBurstTime; i++){
 			//Use sleep() function in order to slow down simulation
 			//depending on this.speed.
 			try {
@@ -122,6 +139,18 @@ public class SimulationThread extends Thread {
 				//If the peeking Job has no more CPU Burst remaining, we remove
 				//the Job from the Job Queue.
 				if (jobQueue.peek().getBurst() == 0){
+					//Set the exit time for the job in order to calculate
+					//turnaround time of job.
+					jobQueue.peek().setExit(i);
+					
+					//Calculate Turnaround
+					Job currentJob = jobQueue.peek();
+					int turnaround = currentJob.getExit() - currentJob.getArrival();
+					String turnaroundLog = "Process " + currentJob.getName() + " ended at time "
+										   + i + ", with Turnaround time of: " + turnaround + "\n";
+					turnarounds.addTurnaround(turnaroundLog);
+					
+					//Remove Job from Job Queue
 					jobQueue.remove();
 				}
 			}
@@ -131,8 +160,12 @@ public class SimulationThread extends Thread {
 		//is completed.
 		Thread.currentThread().interrupt();
 		
+		//Display final turnaround log.
+		turnarounds.listTurnarounds(log);
+		
 		//Display the final Gannt Chart.
 		displayGanntChart(chart, log);
+		
     }
     
 	//Allow the user to display the Gannt chart created by running the 
