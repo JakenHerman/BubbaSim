@@ -12,6 +12,7 @@ public class Job {
     private int burst;
     private int priority;
     private String job_name;
+    private int exit;
 
     public int getArrival(){
         return this.arrival;
@@ -27,6 +28,14 @@ public class Job {
 
     public String getName(){
         return this.job_name;
+    }
+    
+    public void setExit(int exit_received){
+    	this.exit = exit_received;
+    }
+    
+    public int getExit(){
+    	return this.exit;
     }
 
     public void setArrival(int arrival_received){

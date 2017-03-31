@@ -10,12 +10,30 @@ public class JobList {
 	private int jobCount;
 	private Job[] jobs;
 	private int jobIndex = 0;
+	private int earliestArrival;
 	
 	//Allows us to set the number of jobs
 	//that will be in our JobList.
 	public void setJobCount(int count){
 		jobCount = count;
 		initializeJobs();
+	}
+	
+	//Set which process begins first in order
+	//to ensure our CPU runs through entire burst.
+	public void setEarliestArrival(){
+		earliestArrival = jobs[0].getArrival();
+		for(int i = 0; i < jobCount; i++){
+			if (jobs[i].getArrival() < this.earliestArrival){
+				this.earliestArrival = jobs[i].getArrival();
+			}
+		}
+	}
+	
+	//Allow the user to obtain which process will
+	//arrive first.
+	public int getEarliestArrival(){
+		return this.earliestArrival;
 	}
 	
 	//Allows us to initialize and allocate
