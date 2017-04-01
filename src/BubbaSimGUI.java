@@ -17,6 +17,8 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 import java.awt.BorderLayout;
 import javax.swing.JButton;
 import java.awt.TextArea;
@@ -276,6 +278,10 @@ public class BubbaSimGUI implements ActionListener{
 		else {
 			newSimulation.setSpeed(1);
 		}
+		
+		//Allow the user to specify quantum for Round Robin algorithm.
+		newSimulation.setQuantum(Integer.parseInt(JOptionPane
+				.showInputDialog("Set Quantum for Round Robin")));
 		
 		//Begin the thread
 		newSimulation.start();
