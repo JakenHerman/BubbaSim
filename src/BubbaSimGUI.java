@@ -6,6 +6,7 @@
  * 
  */
 
+import io.github.pixee.security.BoundedLineReader;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -156,7 +157,7 @@ public class BubbaSimGUI implements ActionListener{
         	    			JobList jl = new JobList();    
 		            	    
 		            	    //While there are more lines in the file, process them
-		            	    while ((line = br.readLine()) != null) {
+		            	    while ((line = BoundedLineReader.readLine(br, 5_000_000)) != null) {
 		            	       // Check if first line has been processed
 		            	    	if(jobCountFlag == 0){
 		            	    		//Ensure the first line of the file is an integer.
