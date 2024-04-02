@@ -267,10 +267,10 @@ public class BubbaSimGUI implements ActionListener{
 		newSimulation.setComparator(comparator);
 		
 		//Set the speed last, depending on user's selection of 'choice'
-		if(choice.getSelectedItem().equals("Slow")){
+		if("Slow".equals(choice.getSelectedItem())){
 			newSimulation.setSpeed(1000);
 		}
-		else if(choice.getSelectedItem().equals("Medium")){
+		else if("Medium".equals(choice.getSelectedItem())){
 			newSimulation.setSpeed(100);
 		}
 		else {
